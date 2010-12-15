@@ -1,5 +1,9 @@
 # CF Hide Email Notifications Changelog
 
+## 1.1
+
+- Adding more checks for users that have creating privileges but are not Super Admins
+
 ## 1.0
 
 - Initial Release

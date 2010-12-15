@@ -2,7 +2,7 @@
 /*
 Plugin Name: CF Hide Email Notification
 Description: Plugin for handling the blocking of Email confirmations for new users in a MultiSite install of WordPress.
-Version: 1.0
+Version: 1.1
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
@@ -53,6 +53,7 @@ function cfhide_js() {
 ?>
 jQuery(function($) {
 	$('input#noconfirmation').closest('tr').hide();
+	$("#message p").html('User has been added to your site.');
 });
 <?php
 }
@@ -69,6 +70,42 @@ function cfhide_email_confirmation($user_id = '', $password = '', $meta = '') {
 	return false;
 }
 add_filter('wpmu_welcome_user_notification', 'cfhide_email_confirmation', 10, 3);
+
+/**
+ * Automatically activate the user just created instead of sending a confirmation email
+ *
+ * @param string $domain 
+ * @param string $path 
+ * @param string $title 
+ * @param string $user 
+ * @param string $user_email 
+ * @param string $key 
+ * @param string $meta 
+ * @return bool
+ */
+function cfhide_email_confirmation_blog_notification($domain = '', $path = '', $title = '', $user = '', $user_email = '', $key = '', $meta = '') {
+	$result = wpmu_activate_signup($key);
+	return false;
+}
+add_filter('wpmu_signup_blog_notification', 'cfhide_email_confirmation_blog_notification', 10, 7);
+
+/**
+ * Automatically activate the user just created instead of sending a confirmation email
+ *
+ * @param string $user 
+ * @param string $user_email 
+ * @param string $key 
+ * @param string $meta 
+ * @return bool
+ */
+function cfhide_email_confirmation_user_notification($user = '', $user_email = '', $key = '', $meta = '') {
+	$result = wpmu_activate_signup($key);
+	error_log("Activate Signup");
+	error_log('intval($result): '.intval($result));
+	
+	return false;
+}
+add_filter('wpmu_signup_user_notification', 'cfhide_email_confirmation_user_notification', 10, 4);
 
 
 /**
