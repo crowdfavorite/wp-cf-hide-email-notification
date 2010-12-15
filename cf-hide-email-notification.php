@@ -70,4 +70,37 @@ function cfhide_email_confirmation($user_id = '', $password = '', $meta = '') {
 }
 add_filter('wpmu_welcome_user_notification', 'cfhide_email_confirmation', 10, 3);
 
+
+/**
+ * 
+ * CF Readme Inclusion
+ * 
+ **/
+
+/**
+ * Enqueue the readme function
+ */
+function cfhide_add_readme() {
+	if(function_exists('cfreadme_enqueue')) {
+		cfreadme_enqueue('cf-hide-email-notifications','cfhide_readme');
+	}
+}
+add_action('admin_init','cfhide_add_readme');
+
+/**
+ * return the contents of the links readme file
+ * replace the image urls with full paths to this plugin install
+ *
+ * @return string
+ */
+function cfhide_readme() {
+	$file = realpath(dirname(__FILE__)).'/readme/readme.txt';
+	if(is_file($file) && is_readable($file)) {
+		$markdown = file_get_contents($file);
+		$markdown = preg_replace('|!\[(.*?)\]\((.*?)\)|','![$1]('.WP_PLUGIN_URL.'/cf-hide-email-notifications/readme/$2)',$markdown);
+		return $markdown;
+	}
+	return null;
+}
+
 ?>

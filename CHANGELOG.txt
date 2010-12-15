@@ -1,0 +1,5 @@
+# CF Hide Email Notifications Changelog
+
+## 1.0
+
+- Initial Release
