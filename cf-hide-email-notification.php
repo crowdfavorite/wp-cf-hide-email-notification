@@ -100,9 +100,6 @@ add_filter('wpmu_signup_blog_notification', 'cfhide_email_confirmation_blog_noti
  */
 function cfhide_email_confirmation_user_notification($user = '', $user_email = '', $key = '', $meta = '') {
 	$result = wpmu_activate_signup($key);
-	error_log("Activate Signup");
-	error_log('intval($result): '.intval($result));
-	
 	return false;
 }
 add_filter('wpmu_signup_user_notification', 'cfhide_email_confirmation_user_notification', 10, 4);
