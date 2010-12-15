@@ -2,7 +2,7 @@
 /*
 Plugin Name: CF Hide Email Notification
 Description: Plugin for handling the blocking of Email confirmations for new users in a MultiSite install of WordPress.
-Version: 1.0
+Version: 1.1
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
@@ -53,6 +53,7 @@ function cfhide_js() {
 ?>
 jQuery(function($) {
 	$('input#noconfirmation').closest('tr').hide();
+	$("#message p").html('User has been added to your site.');
 });
 <?php
 }
@@ -69,5 +70,71 @@ function cfhide_email_confirmation($user_id = '', $password = '', $meta = '') {
 	return false;
 }
 add_filter('wpmu_welcome_user_notification', 'cfhide_email_confirmation', 10, 3);
+
+/**
+ * Automatically activate the user just created instead of sending a confirmation email
+ *
+ * @param string $domain 
+ * @param string $path 
+ * @param string $title 
+ * @param string $user 
+ * @param string $user_email 
+ * @param string $key 
+ * @param string $meta 
+ * @return bool
+ */
+function cfhide_email_confirmation_blog_notification($domain = '', $path = '', $title = '', $user = '', $user_email = '', $key = '', $meta = '') {
+	$result = wpmu_activate_signup($key);
+	return false;
+}
+add_filter('wpmu_signup_blog_notification', 'cfhide_email_confirmation_blog_notification', 10, 7);
+
+/**
+ * Automatically activate the user just created instead of sending a confirmation email
+ *
+ * @param string $user 
+ * @param string $user_email 
+ * @param string $key 
+ * @param string $meta 
+ * @return bool
+ */
+function cfhide_email_confirmation_user_notification($user = '', $user_email = '', $key = '', $meta = '') {
+	$result = wpmu_activate_signup($key);
+	return false;
+}
+add_filter('wpmu_signup_user_notification', 'cfhide_email_confirmation_user_notification', 10, 4);
+
+
+/**
+ * 
+ * CF Readme Inclusion
+ * 
+ **/
+
+/**
+ * Enqueue the readme function
+ */
+function cfhide_add_readme() {
+	if(function_exists('cfreadme_enqueue')) {
+		cfreadme_enqueue('cf-hide-email-notifications','cfhide_readme');
+	}
+}
+add_action('admin_init','cfhide_add_readme');
+
+/**
+ * return the contents of the links readme file
+ * replace the image urls with full paths to this plugin install
+ *
+ * @return string
+ */
+function cfhide_readme() {
+	$file = realpath(dirname(__FILE__)).'/readme/readme.txt';
+	if(is_file($file) && is_readable($file)) {
+		$markdown = file_get_contents($file);
+		$markdown = preg_replace('|!\[(.*?)\]\((.*?)\)|','![$1]('.WP_PLUGIN_URL.'/cf-hide-email-notifications/readme/$2)',$markdown);
+		return $markdown;
+	}
+	return null;
+}
 
 ?>
