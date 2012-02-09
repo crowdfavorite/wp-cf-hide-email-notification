@@ -1,5 +1,10 @@
 # CF Hide Email Notifications Changelog
 
+## 1.2
+
+- Removing incorrect check_admin_referer call
+- Setting $_REQUEST var as well
+
 ## 1.1
 
 - Adding more checks for users that have creating privileges but are not Super Admins
