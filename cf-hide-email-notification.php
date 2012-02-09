@@ -2,7 +2,7 @@
 /*
 Plugin Name: CF Hide Email Notification
 Description: Plugin for handling the blocking of Email confirmations for new users in a MultiSite install of WordPress.
-Version: 1.1
+Version: 1.2
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
@@ -27,8 +27,8 @@ function cfhide_request_handler() {
 	
 	// If the form is posted from the New User page, modify the $_POST
 	if (!empty($_REQUEST['action']) && $_REQUEST['action'] == 'adduser') {
-		check_admin_referer('add-user');
 		$_POST['noconfirmation'] = 1;
+		$_REQUEST['noconfirmation'] = 1;
 	}
 }
 add_action('init', 'cfhide_request_handler', 1);
